@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Heart, Calendar, Stethoscope, Star, MapPin, Phone, Clock, ChevronRight, Activity, Shield, Users, Award } from 'lucide-react';
+import Footer from '../Components/Footer';
 
 const Home = ({ isStaff }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -316,6 +317,7 @@ const Home = ({ isStaff }) => {
           </div>
         </div>
       </section>
+      <Footer/>
 
       <style jsx>{`
         @keyframes fade-in {

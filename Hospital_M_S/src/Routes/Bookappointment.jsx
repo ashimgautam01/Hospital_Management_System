@@ -5,7 +5,7 @@ import axios from "axios";
 import doctors from "../assets/objects/Doctor";
 import Alert from "../Components/Alert";
 
-const BookAppointment = ({ isAuthenticated,ismember }) => {
+const BookAppointment = ({ isAuthenticated, ismember }) => {
   const [type, SetType] = useState("");
   const [message, setMessage] = useState("");
   const [alerts, setAlert] = useState(false);
@@ -38,7 +38,6 @@ const BookAppointment = ({ isAuthenticated,ismember }) => {
         ...data,
         doctorName: data.doctorName || getRandomDoctor().name,
         doctorId: data.doctorId || getRandomDoctor().id,
-        
       };
       const response = await axios.post(
         "http://localhost:8080/api/v1/appoint/book",
@@ -67,7 +66,6 @@ const BookAppointment = ({ isAuthenticated,ismember }) => {
         setMessage("Date is already booked please try booking date again.");
         setAlert(true);   
       }
-     
     } finally {
       setLoading(false);
     }
@@ -105,6 +103,73 @@ const BookAppointment = ({ isAuthenticated,ismember }) => {
 
   return (
     <>
+      <style jsx>{`
+        .gradient-bg {
+          background: linear-gradient(135deg, #065f46 0%, #0f766e 25%, #14b8a6 50%, #5eead4 75%, #ccfbf1 100%);
+        }
+        
+        .glass-card {
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-focus {
+          transition: all 0.3s ease;
+        }
+        
+        .input-focus:focus {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);
+        }
+        
+        .btn-gradient {
+          background: linear-gradient(135deg, #059669, #0d9488);
+          transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+          background: linear-gradient(135deg, #047857, #0f766e);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+        }
+        
+        .floating-icon {
+          animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-border {
+          animation: pulse-border 2s infinite;
+        }
+        
+        @keyframes pulse-border {
+          0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
+          70% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+        }
+        
+        .text-gradient {
+          background: linear-gradient(135deg, #065f46, #0d9488, #14b8a6);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .card-hover {
+          transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 20px 40px rgba(20, 184, 166, 0.2);
+        }
+      `}</style>
+
       {!isAuthenticated ? (
         <>
           {alerts && (
@@ -116,226 +181,290 @@ const BookAppointment = ({ isAuthenticated,ismember }) => {
               />
             </div>
           )}
-          <div className="py-20 flex justify-center items-center min-h-screen">
-            <img
-              data-aos="zoom-in"
-              className="w-50 h-50"
-              src="https://img.freepik.com/free-vector/403-error-forbidden-with-police-concept-illustration_114360-1904.jpg?t=st=1722009703~exp=1722013303~hmac=f8743ec79b03629cd8f7be7a5632551c77d7ed3ac0ce8847be37ac115ee55a67&w=360"
-              alt="Error 403 Forbidden"
-            />
+          <div className="min-h-screen gradient-bg flex flex-col justify-center items-center">
+            <div className="glass-card rounded-3xl p-12 shadow-2xl max-w-md mx-auto text-center card-hover">
+              <div className="floating-icon mb-8">
+                <svg className="w-24 h-24 mx-auto text-teal-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <h1 className="text-3xl font-bold text-gradient mb-4">
+                Authentication Required
+              </h1>
+              <p className="text-emerald-700 text-lg mb-8">
+                Please login or sign up to book your appointment
+              </p>
+              <div className="space-y-4">
+                <button className="w-full py-3 px-6 btn-gradient text-white font-semibold rounded-xl">
+                  Login
+                </button>
+                <button className="w-full py-3 px-6 border-2 border-teal-500 text-teal-600 font-semibold rounded-xl hover:bg-teal-50 transition-all duration-300">
+                  Sign Up
+                </button>
+              </div>
+            </div>
           </div>
-          <h1 className="-mt-20 text-center font-serif font-extrabold text-cyan-800">
-            PLEASE LOGIN/SIGN UP FIRST
-          </h1>
         </>
       ) : (
         <>
-          <div className="py-20 flex justify-around">
-            <img
-              data-aos="zoom-out"
-              className="w-50 h-45"
-              src="https://img.freepik.com/premium-vector/online-consultation-feedback-concept-laptop-with-picture-male-pharmacist-with-medicines-his-hand_531064-7379.jpg?w=740"
-              alt="Consultation"
-            />
-            <img
-              data-aos="fade-down"
-              className="w-50 h-45"
-              src="https://img.freepik.com/premium-vector/turn-down-icon_1134231-5824.jpg?w=360"
-              alt="Turn Down"
-            />
-          </div>
-          <h4
-            data-aos="fade-up"
-            className="-mt-20 mb-5 text-3xl font-bold text-center text-cyan-900"
-          >
-            SCROLL TO BOOK APPOINTMENT
-          </h4>
-          <div className="min-h-screen bg-gray-100 py-5">
-            <div
-              data-aos="flip-up"
-              className="text-3xl font-bold text-center text-cyan-600 mb-8 mt-20"
-            >
-              Here You can Book an Appointment With Random Doctors
-            </div>
-            <div
-              data-aos="fade-left"
-              className="text-center italic -mt-8 mb-5 justify-around text-gray-500"
-            >
-              If you have taken any memberships, you can select your desired
-              doctor and book an appointment
-            </div>
-            <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-              <form
-                className="space-y-6"
-                onSubmit={handleSubmit}
-                data-aos="flip-down"
-              >
-                <div className="text-lg text-cyan-800 font-semibold">
-                  Please Read the following points before booking an appointment
-                </div>
-                <ul className="list-disc list-inside space-y-4">
-                  <li className="text-sm text-gray-700 font-bold">
-                    Please make sure that the details are correct before booking
-                    an appointment
-                  </li>
-                  <li className="text-sm text-gray-700 font-bold">
-                    Booking will be considered as confirmed and you will be
-                    notified further on the given contact details
-                  </li>
-                  <li className="text-sm text-gray-700 font-bold">
-                    You will be able to see the appointments on the doctor’s
-                    profile
-                  </li>
-                </ul>
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={data.name}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-600 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Your Full Name"
-                    required
-                    maxLength={50}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="age"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Age
-                  </label>
-                  <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    value={data.age}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-600 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Your age"
-                    required
-                    maxLength={2}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    value={data.phone}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-600 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Your phone number here"
-                    required
-                    maxLength={10}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={data.email}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-600 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Your email here"
-                    required
-                    maxLength={50}
-                    onChange={handleChange}
-                  />
-                </div>
-                {ismember && (
-                  <div>
-                    <label
-                      htmlFor="doctor"
-                      className="block text-cyan-700 text-sm font-medium mb-2"
-                    >
-                      Choose a Doctor
-                    </label>
-                    <select
-                      id="doctor"
-                      name="doctor"
-                      value={data.doctorName}
-                      onChange={handleChange}
-                      className="block w-full border border-gray-300 rounded-md p-2 mb-4 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
-                    >
-                      <option value="" disabled>
-                        Select a doctor
-                      </option>
-                      {doctors.map((doctor) => (
-                        <option key={doctor.id} value={doctor.name}>
-                          {doctor.name} - {doctor.specialty}
-                          
-                        </option>
-                      ))}
-                    </select>
+          <div className="min-h-screen gradient-bg">
+            <div className="py-20 px-4">
+              <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col lg:flex-row justify-around items-center gap-12">
+                  <div data-aos="zoom-out" className="floating-icon">
+                    <div className="w-64 h-64 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                      <svg className="w-32 h-32 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
+                      </svg>
+                    </div>
                   </div>
-                )}
-                <div>
-                  <label
-                    htmlFor="datetime"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Appointment Date and Time
-                  </label>
-                  <input
-                    type="datetime-local"
-                    name="datetime"
-                    id="datetime"
-                    className="mt-1 block w-full h-8 rounded-md border-gray-300 shadow-sm focus:border-cyan-600 focus:ring-indigo-500 sm:text-sm"
-                    required
-                    value={data.datetime} // Bind value from state
-                    onChange={handleChange}
-                  />
+                  <div data-aos="fade-left" className="text-center lg:text-left">
+                    <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6">
+                      Book Your
+                      <span className="block ">Appointment</span>
+                    </h1>
+                    <p className="text-xl text-emerald-100 mb-8 max-w-md">
+                      Connect with expert doctors and get the care you deserve
+                    </p>
+                    <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                      <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span className="text-white text-sm">24/7 Available</span>
+                      </div>
+                      <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                        <span className="text-white text-sm">Expert Doctors</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+ 
+            <div className="text-center mb-12">
+              <div data-aos="fade-up" className="inline-block">
+                <div className="pulse-border rounded-full p-4 bg-white/20 backdrop-blur-sm flex flex-col items-center">
+                  <svg className="w-8 h-8 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                  <p className="text-white mt-4 font-semibold p-2">Scroll Down to Book Appointment</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pb-20 px-4">
+              <div className="max-w-4xl mx-auto">
+                <div data-aos="flip-up" className="text-center mb-12">
+                  <h2 className="text-4xl font-bold text-white mb-4">
+                    Book an Appointment
+                  </h2>
+                  <p className="text-xl text-emerald-100 mb-2">
+                    Connect with {ismember ? 'your preferred' : 'our expert'} doctors
+                  </p>
+                  {ismember && (
+                    <div className="inline-block bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-semibold">
+                      ✨ Premium Member - Choose Your Doctor
+                    </div>
+                  )}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="problem"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Problem Description
-                  </label>
-                  <textarea
-                    name="problem"
-                    id="problem"
-                    className="mt-1 block w-full h-24 rounded-md border-gray-300 shadow-sm focus:border-cyan-600 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Describe your problem here"
-                    required
-                    onChange={handleChange}
-                  ></textarea>
+                <div className="glass-card rounded-3xl p-8 lg:p-12 shadow-2xl card-hover">
+                  <form className="space-y-8" onSubmit={handleSubmit} data-aos="fade-up">
+                  
+                    <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border-l-4 border-teal-500 p-6 rounded-r-xl">
+                      <div className="flex items-center mb-4">
+                        <svg className="w-6 h-6 text-teal-600 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <h3 className="text-lg font-semibold text-teal-800">Important Information</h3>
+                      </div>
+                      <ul className="space-y-3 text-sm text-teal-700">
+                        <li className="flex items-start">
+                          <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                          Please ensure all details are correct before booking
+                        </li>
+                        <li className="flex items-start">
+                          <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                          You'll receive confirmation via email and phone
+                        </li>
+                        <li className="flex items-start">
+                          <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                          View your appointments on the doctor's profile
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8"> 
+                      <div className="space-y-6">
+                        <h3 className="text-xl font-semibold text-gradient mb-4">Personal Information</h3>
+                        
+                        <div>
+                          <label htmlFor="name" className="block text-sm font-medium text-emerald-700 mb-2">
+                            Full Name *
+                          </label>
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={data.name}
+                            className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
+                            placeholder="Enter your full name"
+                            required
+                            maxLength={50}
+                            onChange={handleChange}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="age" className="block text-sm font-medium text-emerald-700 mb-2">
+                              Age *
+                            </label>
+                            <input
+                              type="number"
+                              id="age"
+                              name="age"
+                              value={data.age}
+                              className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
+                              placeholder="Age"
+                              required
+                              maxLength={2}
+                              onChange={handleChange}
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="phone" className="block text-sm font-medium text-emerald-700 mb-2">
+                              Phone *
+                            </label>
+                            <input
+                              type="text"
+                              id="phone"
+                              name="phone"
+                              value={data.phone}
+                              className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
+                              placeholder="Phone number"
+                              required
+                              maxLength={10}
+                              onChange={handleChange}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label htmlFor="email" className="block text-sm font-medium text-emerald-700 mb-2">
+                            Email Address *
+                          </label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={data.email}
+                            className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
+                            placeholder="Enter your email"
+                            required
+                            maxLength={50}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+ 
+                      <div className="space-y-6">
+                        <h3 className="text-xl font-semibold text-gradient mb-4">Appointment Details</h3>
+                        
+                        {ismember && (
+                          <div>
+                            <label htmlFor="doctor" className="block text-sm font-medium text-emerald-700 mb-2">
+                              Choose Your Doctor
+                            </label>
+                            <select
+                              id="doctor"
+                              name="doctor"
+                              value={data.doctorName}
+                              onChange={handleChange}
+                              className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
+                            >
+                              <option value="" disabled>Select a doctor</option>
+                              {doctors.map((doctor) => (
+                                <option key={doctor.id} value={doctor.name}>
+                                  {doctor.name} - {doctor.specialty}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        <div>
+                          <label htmlFor="datetime" className="block text-sm font-medium text-emerald-700 mb-2">
+                            Preferred Date & Time *
+                          </label>
+                          <input
+                            type="datetime-local"
+                            name="datetime"
+                            id="datetime"
+                            className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
+                            required
+                            value={data.datetime}
+                            onChange={handleChange}
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="problem" className="block text-sm font-medium text-emerald-700 mb-2">
+                            Problem Description *
+                          </label>
+                          <textarea
+                            name="problem"
+                            id="problem"
+                            rows={5}
+                            className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700 resize-none"
+                            placeholder="Please describe your symptoms or concerns..."
+                            required
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-8">
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-4 px-8 btn-gradient text-white font-semibold rounded-xl text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                      >
+                        {loading ? (
+                          <>
+                            <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            Booking Your Appointment...
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Book Appointment
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-                <button
-                  type="submit"
-                  className="w-full py-2 px-4 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
-                >
-                  {loading ? "Booking..." : "Book Appointment"}
-                </button>
-              </form>
+              </div>
             </div>
           </div>
         </>
+      )}
+
+      {alerts && (
+        <div className="fixed top-4 right-4 z-50">
+          <Alert
+            type={type}
+            message={message}
+            onClose={() => setAlert(false)}
+          />
+        </div>
       )}
     </>
   );
