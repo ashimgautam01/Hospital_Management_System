@@ -1,66 +1,126 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Menu, X, User, LogOut, Calendar, Pill, Crown, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Login from '../Routes/Login';
 import axios from 'axios';
 
-const Navbar = ({ isAuthenticated }) => {
-  const [showLogin, setShowLogin] = useState(false);
- const handleLogout=async()=>{
+const Navbar = ({ isAuthenticated, setShowLogin }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  try {
-    const response=await axios.delete("http://localhost:8080/api/v1/users/logout",
-      {withCredentials:true}
-    )
-    window.location.reload()
-  } catch (error) {
-    console.log(error);
-  }
- }
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.delete("http://localhost:8080/api/v1/users/logout", {
+        withCredentials: true,
+      });
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const navLinks = [
+    { to: "/medicineinfo", label: "Search Medicines", icon: Pill },
+    { to: "/appointment", label: "Book Appointment", icon: Calendar },
+    { to: "/membership", label: "Memberships", icon: Crown },
+  ];
+
   return (
-    <>
-      <div>
-        <header className="text-gray-600 body-font fixed w-full bg-white shadow-md z-20 ">
-          <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-            <Link to={"/"} className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-              <img 
-                src="https://img.freepik.com/free-vector/hospital-illustration-with-green-leafs_1394-713.jpg?t=st=1721709848~exp=1721713448~hmac=85609a8e7bd54ec36582d45e518306abd247a39d041a2c661254c1d7b64c2494&w=360" 
-                className="h-10 w-10 rounded-full" 
-                alt="City Hospital"
-              />
-              <span className="ml-3 text-xl">City Hospital</span>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'} py-4`}>
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+       
+        <Link to="/" className="text-2xl font-bold text-green-950">
+          HealthHub
+        </Link>
+
+        <div className="hidden md:flex space-x-6 items-center">
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="flex items-center space-x-1 text-gray-900 hover:text-teal-600 transition"
+            >
+              <link.icon className="w-5 h-5 " />
+              <span className='text-gray-900'>{link.label}</span>
             </Link>
-            <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
-            <Link to="/medicineinfo" className="mr-5 hover:text-gray-900">Search Medicines</Link>
-              <Link to="/appointment" className="mr-5 hover:text-gray-900">Book Appointment</Link>
-              <Link to="/membership" className="mr-5 hover:text-gray-900">Memberships</Link>
-              {
-                !isAuthenticated ?
-                <>
-                  <button 
-                    onClick={() => setShowLogin(true)} 
-                    className="mr-5 hover:text-gray-900"
-                  >
-                    Login
-                  </button>
-                  <Link to="/register" className="mr-5 hover:text-gray-900">Sign Up</Link>
-                </>
-                :
-                <button onClick={handleLogout} className="mr-5 hover:text-gray-900">Log Out</button>
-              }
-            </nav>
-            <a href="/profile" className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-300 rounded text-base mt-4 md:mt-0">
-              Your Profile
-              
-              <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-4 h-4 ml-1" viewBox="0 0 24 24">
-                <path d="M5 12h14M12 5l7 7-7 7"></path>
-              </svg>
-            </a>
-          </div>
-        </header>
-        {showLogin && <Login setShowLogin={setShowLogin} />}
+          ))}
+
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-1 bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          ) : (
+<div className='flex justify-end gap-2'>
+            <button
+              onClick={() => setShowLogin(true)}
+              className="flex items-center space-x-1 bg-teal-800 text-white px-4 py-2 rounded-xl hover:bg-teal-700 transition"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Login</span>
+            </button>
+            <button
+              onClick={() => setShowLogin(true)}
+              className="flex items-center space-x-1 bg-teal-800 text-white px-4 py-2 rounded-xl hover:bg-teal-700 transition"
+            >
+              <LogIn className="w-4 h-4" />
+              <span> Sign In</span>
+            </button>
+</div>
+          )}
+        </div>
+        <div className="md:hidden">
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
-    </>
+
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white shadow-md px-6 pt-4 pb-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="block py-2 text-gray-700 hover:text-teal-600"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              className="w-full text-left py-2 text-red-600 hover:text-red-700"
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setShowLogin(true);
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full text-left py-2 text-teal-600 hover:text-teal-700"
+            >
+              Login
+            </button>
+          )}
+        </div>
+      )}
+    </nav>
   );
-}
+};
 
 export default Navbar;
