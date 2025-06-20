@@ -77,7 +77,7 @@ function App() {
           path="/checkout"
           element={<Payment isAuthenticated={isAuthenticated} />}
         />
-        <Route element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/otpverification/:id"
           element={<Otp_verify isAuthenticated={isAuthenticated} />}
