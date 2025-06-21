@@ -29,7 +29,7 @@ function App() {
   const showNavbar =
     location.pathname !== "/admin" &&
     !location.pathname.startsWith("/doctor/") &&
-    !location.pathname.startsWith("/staff/")
+    !location.pathname.startsWith("/staff")
   const [isAuthenticated, setisAuthenticated] = useState(false);
   const [ismember, setismember] = useState(false);
   const [isStaff, setisStaff] = useState("");
@@ -55,6 +55,7 @@ function App() {
     <div>
       {showNavbar && <Navbar isAuthenticated={isAuthenticated} />}
       <Routes>
+<Route path="*" element={<Home isStaff={isStaff} />} />
         <Route path="/" element={<Home isStaff={isStaff} />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/membership" element={<Membership />} />
@@ -67,10 +68,12 @@ function App() {
             />
           }
         />
-        <Route
+       {isAuthenticated && (
+       <Route
           path="/profile"
           element={<Profile isAuthenticated={isAuthenticated} />}
-        />
+        /> 
+      )}
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route
@@ -87,12 +90,16 @@ function App() {
         <Route path="/staffs" element={<Staffs />} />
         <Route path="/doctor/doctorpage" element={<DoctorPage />} />
         <Route path="/doctor/login" element={<DoctorLogin />} />
-        <Route path="/staff" element={<Staff />} />
-        <Route path="/doctor/patient_info/:id" element={<Patient_info />} />
-        <Route path="/staff/doctorchange" element={<DoctorChange />} />
-        <Route path="/staff/pharmacy" element={<Pharmacy />} />
-        <Route path="/staff/lab" element={<Lab />} />
-        <Route path="/staff/lab-reports" element={<LabReportsPage/>} />
+       {isStaff && (
+  <>
+    <Route path="/staff" element={<Staff />} />
+    <Route path="/doctor/patient_info/:id" element={<Patient_info />} />
+    <Route path="/staff/doctorchange" element={<DoctorChange />} />
+    <Route path="/staff/pharmacy" element={<Pharmacy />} />
+    <Route path="/staff/lab" element={<Lab />} />
+    <Route path="/staff/lab-reports" element={<LabReportsPage />} />
+  </>
+)}
       </Routes>
     </div>
   );

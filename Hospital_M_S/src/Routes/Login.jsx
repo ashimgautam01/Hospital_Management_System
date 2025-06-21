@@ -25,7 +25,9 @@ const Login = ({ setShowLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:8080/api/v1/users/login', data, { withCredentials: true });
+      const res = await axios.post('http://localhost:8080/api/v1/users/login', data, {
+        withCredentials: true,
+      });
       if (res.status === 200) {
         setType('success');
         setMessage('Login successful! 🎉');
@@ -43,7 +45,7 @@ const Login = ({ setShowLogin }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justi  fy-center bg-black/50 px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
       <div
         data-aos="zoom-in"
         className="relative bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-3xl flex flex-col md:flex-row"
@@ -54,7 +56,7 @@ const Login = ({ setShowLogin }) => {
         >
           ✕
         </button>
- 
+
         <div className="md:w-1/2 bg-gradient-to-br from-teal-500 to-green-400 p-6 flex items-center justify-center">
           <img
             src="https://img.freepik.com/free-vector/hand-drawn-hospital-reception-scene_23-2148837407.jpg?t=st=1721718240~exp=1721721840~hmac=7e95c8c0b40864a72b20729bf1ab983eb568f78791e56271779974e5749d63bc&w=740"
@@ -62,7 +64,7 @@ const Login = ({ setShowLogin }) => {
             className="rounded-2xl shadow-lg"
           />
         </div>
- 
+
         <div className="md:w-1/2 bg-white p-8">
           <h2 className="text-3xl font-bold text-teal-600 mb-6 text-center">Welcome Back!</h2>
           {alerts && (
