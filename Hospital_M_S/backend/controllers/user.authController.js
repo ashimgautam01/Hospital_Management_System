@@ -201,7 +201,10 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  await User.findOneAndUpdate({ $set: { refreshToken: undefined } });
+  const id=req.user._id
+  const user=await User.findOne({_id:id});
+  user.refreshToken=null;
+  await user.save()
   const options = {
     http: true,
     secure: true,

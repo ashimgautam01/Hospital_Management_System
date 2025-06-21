@@ -70,61 +70,105 @@ const Patient_info = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-cyan-100 to-blue-100 p-10 py-10">
-            <h1 className="text-4xl font-extrabold text-gray-800 mb-8 text-center">Patient Details</h1>
+        <div className="min-h-screen bg-gray-50 p-8">
+            <div className="max-w-4xl mx-auto">
+                <h1 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Patient Details</h1>
 
-            {patient ? (
-                <div className="bg-white shadow-xl rounded-xl p-8 transform transition-transform hover:scale-105 max-w-3xl mx-auto">
-                    <div className="flex flex-col lg:flex-row lg:items-start mb-8">
-                        <div className="lg:w-1/3">
+                {patient ? (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                     
+                        <div className="flex flex-col md:flex-row items-center md:items-start mb-8 pb-6 border-b border-gray-100">
                             <img
-                                src={user.profile}  
+                                src={user.profile}
                                 alt={patient.name}
-                                className="w-full h-32 object-cover rounded-full border-4 border-cyan-500 shadow-lg"
+                                className="w-24 h-24 rounded-full border-2 border-teal-500 mb-4 md:mb-0 md:mr-6"
                             />
+                            <div className="text-center md:text-left">
+                                <h2 className="text-2xl font-medium text-gray-800 mb-2">{patient.name}</h2>
+                                <p className="text-gray-600">{patient.email}</p>
+                                <p className="text-gray-600">{patient.phone}</p>
+                            </div>
+                            <div className="md:ml-auto mt-4 md:mt-0">
+                                <button 
+                                    onClick={() => openPopup(patient.user)}
+                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors"
+                                >
+                                    Medical History
+                                </button>
+                            </div>
                         </div>
-                        <div className="lg:w-2/3 lg:ml-6 mt-6 lg:mt-0">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Patient Information</h2>
-                            <p className="text-gray-700 text-lg mb-2"><strong>Name:</strong> {patient.name}</p>
-                            <p className="text-gray-600 text-lg mb-2"><strong>Phone:</strong> {patient.phone}</p>
-                            <p className="text-gray-600 text-lg mb-2"><strong>Email:</strong> {patient.email}</p>
-                            <p className="text-gray-600 text-lg mb-2"><strong>Doctor:</strong> {patient.doctorName}</p>
-                            <p className="text-gray-600 text-lg mb-2"><strong>Date:</strong> {patient.date}</p>
-                            <p className="text-gray-600 text-lg mb-4"><strong>Problem:</strong> {patient.problem}</p>
+ 
+                        <div className="mb-8">
+                            <h3 className="text-lg font-medium text-gray-800 mb-4">Appointment Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
+                                    <p className="text-gray-900">{patient.doctorName}</p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                    <p className="text-gray-900">{patient.date}</p>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Problem Description</label>
+                                    <p className="text-gray-900 bg-gray-50 p-3 rounded border">{patient.problem}</p>
+                                </div>
+                            </div>
                         </div>
-                        <button className='bg-cyan-500 text-sky-50 rounded-lg font-bold w-auto' onClick={() => openPopup(patient.user)}>Medical History</button> 
-                    </div>
+ 
+                        <div className="border-t border-gray-100 pt-8">
+                            <h3 className="text-lg font-medium text-gray-800 mb-6">Medical Response</h3>
+                            
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Response to Patient
+                                    </label>
+                                    <textarea
+                                        value={response}
+                                        onChange={(e) => setResponse(e.target.value)}
+                                        placeholder="Enter your medical response and recommendations..."
+                                        className="w-full border border-gray-300 rounded p-3 h-32 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Prescribed Medicine
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={medicine}
+                                        onChange={(e) => setMedicine(e.target.value)}
+                                        placeholder="Enter prescribed medications..."
+                                        className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                                    />
+                                </div>
+                                
+                                <button
+                                    onClick={handleResponse}
+                                    className="w-full md:w-auto px-8 py-3 bg-green-600 text-white font-medium rounded hover:bg-green-700 transition-colors"
+                                >
+                                    Submit Response
+                                </button>
+                            </div>
+                        </div>
 
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4">Respond to Patient</h3>
-                    <textarea
-                        value={response}
-                        onChange={(e) => setResponse(e.target.value)}
-                        placeholder="Write your response here..."
-                        className="w-full border border-gray-300 rounded-md p-4 mb-4 shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition duration-300"
-                        rows="4"
-                    />
-                    <input
-                        type="text"
-                        value={medicine}
-                        onChange={(e) => setMedicine(e.target.value)}
-                        placeholder="Enter prescribed medicine here..."
-                        className="w-full border border-gray-300 rounded-md p-4 mb-4 shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition duration-300"
-                    />
-                    <button
-                        onClick={handleResponse}
-                        className="w-full py-3 px-6 bg-cyan-600 text-white font-semibold rounded-md shadow-lg hover:bg-cyan-700 transition duration-300"
-                    >
-                        Submit Response
-                    </button>
-                    <DetailsPopup
-                        isOpen={popupIsOpen}
-                        onClose={closePopup}
-                        details={history}
-                    />
-                </div>
-            ) : (
-                <p className="text-xl text-gray-700 text-center">Loading patient details...</p>
-            )}
+                        <DetailsPopup
+                            isOpen={popupIsOpen}
+                            onClose={closePopup}
+                            details={history}
+                        />
+                    </div>
+                ) : (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                        <div className="flex items-center justify-center space-x-3">
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600"></div>
+                            <p className="text-lg text-gray-600">Loading patient details...</p>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
