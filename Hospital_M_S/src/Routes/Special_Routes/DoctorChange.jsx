@@ -138,27 +138,6 @@ const DoctorChange = () => {
                   required
                 />
 
-                <label className="font-bold mb-2 block">Doctor ID</label>
-                <input
-                  type="text"
-                  name="doctorid"
-                  value={newDoctor.doctorid}
-                  onChange={handleInputChange}
-                  placeholder="Doctor ID"
-                  className="border p-2 mb-4 w-full"
-                  required
-                />
-
-                <label className="font-bold mb-2 block">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={newDoctor.password}
-                  onChange={handleInputChange}
-                  placeholder="Password"
-                  className="border p-2 mb-4 w-full"
-                  required
-                />
 
                 <label className="font-bold mb-2 block">Doctor Specialization</label>
                 <input
