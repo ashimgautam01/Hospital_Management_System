@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
-import doctors from "../assets/objects/Doctor";
 import Alert from "../Components/Alert";
 
 const BookAppointment = ({ isAuthenticated, ismember }) => {
@@ -10,6 +9,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
   const [message, setMessage] = useState("");
   const [alerts, setAlert] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [doctors, setDoctor] = useState([]);
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -22,11 +22,15 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
   });
 
   const getRandomDoctor = () => {
+    if (doctors.length === 0) {
+      console.warn("No doctors available for random selection");
+      return { name: "", id: "" };
+    }
     const randomIndex = Math.floor(Math.random() * doctors.length);
     const randomDoctor = doctors[randomIndex];
     return {
       name: randomDoctor.name,
-      id: randomDoctor.id,
+      id: randomDoctor._id,
     };
   };
 
@@ -34,11 +38,33 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
     setLoading(true);
 
     try {
+      // Get doctor info - either selected or random
+      let finalDoctorName = data.doctorName;
+      let finalDoctorId = data.doctorId;
+
+      // If no doctor is selected (for non-members), assign random doctor
+      if (!finalDoctorName || !finalDoctorId) {
+        const randomDoctor = getRandomDoctor();
+        finalDoctorName = randomDoctor.name;
+        finalDoctorId = randomDoctor.id;
+      }
+
+      // Validate that we have a doctor
+      if (!finalDoctorName || !finalDoctorId) {
+        SetType("danger");
+        setMessage("Unable to assign a doctor. Please try again.");
+        setAlert(true);
+        return;
+      }
+
       const appointmentData = {
         ...data,
-        doctorName: data.doctorName || getRandomDoctor().name,
-        doctorId: data.doctorId || getRandomDoctor().id,
+        doctorName: finalDoctorName,
+        doctorId: finalDoctorId,
       };
+
+      console.log("Appointment Data:", appointmentData);
+
       const response = await axios.post(
         "http://localhost:8080/api/v1/appoint/book",
         {
@@ -53,7 +79,18 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
       );
 
       if (response.status === 200) {
-        setData(response.data);
+        // Reset form after successful booking
+        setData({
+          name: "",
+          email: "",
+          phone: "",
+          doctorName: "",
+          doctorId: "",
+          datetime: "", 
+          age: "",
+          problem: "",
+        });
+        
         SetType("success");
         setMessage(
           "Appointment booked successfully. You will be informed further through mail and phone."
@@ -61,10 +98,15 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
         setAlert(true);
       }
     } catch (error) {
-      if(error.response.status === 400) {
+      console.error("Booking error:", error);
+      if(error.response?.status === 400) {
         SetType("danger");
         setMessage("Date is already booked please try booking date again.");
         setAlert(true);   
+      } else {
+        SetType("danger");
+        setMessage("Failed to book appointment. Please try again.");
+        setAlert(true);
       }
     } finally {
       setLoading(false);
@@ -76,11 +118,20 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
 
     if (name === "doctor") {
       const selectedDoctor = doctors.find((doctor) => doctor.name === value);
-      setData({
-        ...data,
-        doctorName: selectedDoctor.name,
-        doctorId: selectedDoctor.id,
-      });
+      if (selectedDoctor) {
+        setData({
+          ...data,
+          doctorName: selectedDoctor.name,
+          doctorId: selectedDoctor._id,
+        });
+      } else {
+        // Clear doctor selection if invalid
+        setData({
+          ...data,
+          doctorName: "",
+          doctorId: "",
+        });
+      }
     } else {
       setData({
         ...data,
@@ -89,15 +140,58 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
     }
   };
 
+  const getDoctors = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/doctor/getdoctors');
+      if (response && response.data?.data) {
+        console.log("Doctors fetched:", response.data.data);
+        setDoctor(response.data.data);
+      } else {
+        console.warn("No doctors data received");
+      }
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+      SetType("danger");
+      setMessage("Failed to load doctors. Please refresh the page.");
+      setAlert(true);
+    }
+  };
+
   useEffect(() => {
     AOS.init({
       duration: 2000,
       once: true,
     });
+    getDoctors();
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!data.name || !data.email || !data.phone || !data.age || !data.problem || !data.datetime) {
+      SetType("danger");
+      setMessage("Please fill in all required fields.");
+      setAlert(true);
+      return;
+    }
+
+    // For members, ensure they selected a doctor
+    if (ismember && (!data.doctorName || !data.doctorId)) {
+      SetType("danger");
+      setMessage("Please select a doctor.");
+      setAlert(true);
+      return;
+    }
+
+    // Check if doctors are loaded for non-members
+    if (!ismember && doctors.length === 0) {
+      SetType("danger");
+      setMessage("Doctors list not loaded. Please refresh the page.");
+      setAlert(true);
+      return;
+    }
+
     fetchUser();
   };
 
@@ -289,7 +383,8 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                         </li>
                         <li className="flex items-start">
                           <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          View your appointments on the doctor's profile
+                          {!ismember && "A doctor will be randomly assigned for you"}
+                          {ismember && "View your appointments on the doctor's profile"}
                         </li>
                       </ul>
                     </div>
@@ -328,7 +423,8 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                               className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
                               placeholder="Age"
                               required
-                              maxLength={2}
+                              min="1"
+                              max="120"
                               onChange={handleChange}
                             />
                           </div>
@@ -337,13 +433,14 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                               Phone *
                             </label>
                             <input
-                              type="text"
+                              type="tel"
                               id="phone"
                               name="phone"
                               value={data.phone}
                               className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
                               placeholder="Phone number"
                               required
+                              pattern="[0-9]{10}"
                               maxLength={10}
                               onChange={handleChange}
                             />
@@ -374,7 +471,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                         {ismember && (
                           <div>
                             <label htmlFor="doctor" className="block text-sm font-medium text-emerald-700 mb-2">
-                              Choose Your Doctor
+                              Choose Your Doctor *
                             </label>
                             <select
                               id="doctor"
@@ -382,14 +479,29 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                               value={data.doctorName}
                               onChange={handleChange}
                               className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
+                              required={ismember}
                             >
                               <option value="" disabled>Select a doctor</option>
                               {doctors.map((doctor) => (
-                                <option key={doctor.id} value={doctor.name}>
-                                  {doctor.name} - {doctor.specialty}
+                                <option key={doctor._id} value={doctor.name}>
+                                  {doctor.name} - {doctor.specialization}
                                 </option>
                               ))}
                             </select>
+                          </div>
+                        )}
+
+                        {!ismember && doctors.length > 0 && (
+                          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                            <div className="flex items-center mb-2">
+                              <svg className="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                              </svg>
+                              <span className="text-blue-800 font-medium">Doctor Assignment</span>
+                            </div>
+                            <p className="text-blue-700 text-sm">
+                              A suitable doctor will be automatically assigned based on your problem description.
+                            </p>
                           </div>
                         )}
 
@@ -404,6 +516,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                             className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700"
                             required
                             value={data.datetime}
+                            min={new Date().toISOString().slice(0, 16)}
                             onChange={handleChange}
                           />
                         </div>
@@ -417,10 +530,15 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                             id="problem"
                             rows={5}
                             className="input-focus w-full rounded-xl border-2 border-teal-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 px-4 py-3 text-gray-700 resize-none"
-                            placeholder="Please describe your symptoms or concerns..."
+                            placeholder="Please describe your symptoms or concerns in detail..."
                             required
+                            maxLength={500}
+                            value={data.problem}
                             onChange={handleChange}
                           />
+                          <div className="text-right text-sm text-gray-500 mt-1">
+                            {data.problem.length}/500 characters
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -471,3 +589,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
 };
 
 export default BookAppointment;
+
+  // sessionStorage.setItem('doctor-token',response.data.data.id)
+  //       sessionStorage.setItem('photo',response.data.data.photo)
+  //       sessionStorage.setItem('name',response.data.data.name)

@@ -4,74 +4,75 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
-    const [data,Setdata]=useState([
-      {"doctorid":'',
-      "password":''}
-    ]);
+  const [data, setData] = useState({
+    doctorid: '',
+    password: ''
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-    const handlechange=(e)=>{
-        const {name,value}=e.target;
-        Setdata({
-            ...data,
-            [name]:value
-        })
-    }
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/doctor/login',data);
-     if (response.status === 200) {
-      console.log(response.data.data);
-        sessionStorage.setItem('doctor-token',response.data.data.id)
-        sessionStorage.setItem('photo',response.data.data.photo)
-        navigate('/doctor/doctorpage')
+      const response = await axios.post('http://localhost:8080/api/v1/doctor/login', data);
+      if (response.status === 200) {
+        sessionStorage.setItem('doctor-token', response.data.data.id);
+        sessionStorage.setItem('photo', response.data.data.photo);
+        navigate('/doctor/doctorpage');
       }
     } catch (err) {
-      setError('Invalid id or password');
+      setError('Invalid ID or password');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-cyan-50">
-      <div className="w-full max-w-md bg-gray-100 shadow-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Login</h1>
-        {error && <div className="mb-4 text-red-600 font-bold text-center">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label  className="block text-sm font-medium text-gray-700">ID</label>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-50 to-green-50">
+      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-teal-100">
+        <h1 className="text-3xl font-bold text-green-800 mb-6 text-center tracking-tight">Doctor Login</h1>
+        {error && (
+          <div className="mb-4 text-red-600 font-semibold text-center">{error}</div>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-teal-800 mb-1">ID</label>
             <input
               type="text"
               id="doctorid"
               name="doctorid"
-              
-              onChange={handlechange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+              value={data.doctorid}
+              onChange={handleChange}
+              className="block w-full border border-teal-200 rounded-md p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
               required
+              autoFocus
             />
           </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <div>
+            <label className="block text-sm font-medium text-teal-800 mb-1">Password</label>
             <input
               type="password"
               id="password"
               name="password"
-              onChange={handlechange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+              value={data.password}
+              onChange={handleChange}
+              className="block w-full border border-teal-200 rounded-md p-2 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-cyan-600 text-white font-semibold rounded-md shadow-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+            className="w-full py-2 px-4 bg-gradient-to-r from-teal-600 to-green-600 text-white font-semibold rounded-md shadow hover:from-teal-700 hover:to-green-700 transition focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}

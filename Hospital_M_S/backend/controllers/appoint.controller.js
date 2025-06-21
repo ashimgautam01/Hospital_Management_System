@@ -9,6 +9,7 @@ import User from "../models/user.js";
 
 const bookAppointment = asyncHandler(async (req, res) => {
   const { d_id, name, age, date, doctorName, problem, phone } = req.body;
+  console.log(req.body);
   if (!d_id || !name || !age || !date || !doctorName || !problem) {
     throw new ApiError(401, "All fields are required");
   }

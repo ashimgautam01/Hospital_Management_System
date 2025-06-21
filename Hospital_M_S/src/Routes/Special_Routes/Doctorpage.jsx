@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const DoctorPage = ({ handleLogout }) => {
-  const navigate = useNavigate();
+  const navigate = (path) => console.log(`Navigate to: ${path}`);
   const [appointments, setAppointments] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const authToken = sessionStorage.getItem("doctor-token");
   const doctorPhoto = sessionStorage.getItem("photo");
+  const doctorname=sessionStorage.getItem("name")
 
   useEffect(() => {
     if (!authToken) {
@@ -20,15 +21,27 @@ const DoctorPage = ({ handleLogout }) => {
             `http://localhost:8080/api/v1/doctor/appointment/${authToken}`
           );
 
-          setAppointments(response.data.data.Appointments || []);
-          setFilteredAppointments(response.data.data.Appointments || []);
+          const allAppointments = response.data.data.Appointments || [];
+           
+          const today = new Date();
+          const todaysAppointments = allAppointments.filter(appointment => {
+            const appointmentDate = new Date(appointment.date);
+            return (
+              appointmentDate.getDate() === today.getDate() &&
+              appointmentDate.getMonth() === today.getMonth() &&
+              appointmentDate.getFullYear() === today.getFullYear()
+            );
+          });
+
+          setAppointments(todaysAppointments);
+          setFilteredAppointments(todaysAppointments);
         } catch (error) {
           console.error("Error fetching appointments", error);
         }
       };
       fetchAppointments();
     }
-  }, [authToken, navigate]);
+  }, []);
 
   useEffect(() => {
     setFilteredAppointments(
@@ -39,84 +52,185 @@ const DoctorPage = ({ handleLogout }) => {
   }, [searchQuery, appointments]);
 
   return (
-    <div className="min-h-screen bg-cyan-50 p-8 flex flex-col">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center">
-          <img
-            src={doctorPhoto}
-            alt="Doctor"
-            className="h-32 w-32 rounded-full border-2 border-cyan-600 mr-4"
-          />
-          <h1 className="text-4xl font-extrabold text-gray-900">
-            Doctor's Dashboard
-          </h1>
-        </div>
-        <div className="flex space-x-5">
-        <Link
-          to={"/"}
-          className="inline-flex text-white bg-cyan-600 border-0 py-2 px-6 focus:outline-none hover:bg-cyan-800 rounded text-lg"
-        >
-          Home
-        </Link>
-        <button
-          className="inline-flex text-white bg-cyan-600 border-0 py-2 px-6 focus:outline-none hover:bg-cyan-800 rounded text-lg"
-          onClick={handleLogout}
-        >
-          Log Out
-        </button>
-        </div>
-      </div>
-      <div className="flex justify-between items-center mb-8">
-        <input
-          type="text"
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border border-gray-300 rounded-md p-4 w-1/2 mx-auto text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-        />
-      </div>
-      <h2 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
-        Patient Appointments
-      </h2>
-      {filteredAppointments.length === 0 ? (
-        <div className="text-center text-xl text-gray-700 mt-10">
-          <p className="animate-pulse">
-            There are no appointments at the moment.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-6 flex flex-col items-center">
-          {filteredAppointments.map((patient, index) => (
-            <div
-              key={patient._id}
-              className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-3xl flex flex-col space-y-4 transition-transform transform hover:scale-105 hover:shadow-2xl"
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                <div className="flex-1">
-                  <p className="text-gray-600 text-md mb-1">
-                    <strong>S.N.:</strong> {index + 1}
-                  </p>
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                    {patient.name}
-                  </h2>
-                  <p className="text-gray-600 text-md mb-1">
-                    Email: {patient.email}
-                  </p>
-                  <p className="text-gray-600 text-md mb-1">
-                    Date: {patient.date}
-                  </p>
-                </div>
-                <Link
-                  to={`/doctor/patient_info/${patient._id}`}
-                  className="text-white bg-cyan-600 hover:bg-cyan-700 font-semibold px-4 py-2 rounded-md shadow-lg transition-transform transform hover:scale-105 mt-4 md:mt-0"
-                >
-                  View
-                </Link>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="relative">
+              <img
+                src={doctorPhoto}
+                alt="Doctor"
+                className="h-20 w-20 md:h-24 md:w-24 rounded-full border-2 border-green-200 shadow-sm"
+              />
+              <div className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
               </div>
             </div>
-          ))}
+            <div className="text-center md:text-left">
+              <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-1">
+                {doctorname}
+              </h1>
+              <p className="text-gray-600 text-base">
+                {new Date().toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+              <div className="flex items-center justify-center md:justify-start gap-2 mt-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-gray-500 text-sm">Available</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              to={"/"}
+              className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md font-medium text-sm transition-colors duration-200 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Home
+            </Link>
+            <button
+              className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-md font-medium text-sm transition-colors duration-200 flex items-center gap-2"
+              onClick={handleLogout}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Log Out
+            </button>
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div className="text-2xl font-semibold text-green-600 mb-1">{appointments.length}</div>
+          <div className="text-gray-700 text-sm font-medium">Today's Appointments</div>
+        </div>
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div className="text-2xl font-semibold text-green-600 mb-1">{filteredAppointments.length}</div>
+          <div className="text-gray-700 text-sm font-medium">Filtered Results</div>
+        </div>
+      </div>
+
+      {/* Search Section */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Search today's appointments by patient name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border border-gray-300 pl-10 pr-4 py-2 text-gray-700 focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            Today's Patient Appointments
+          </h2>
+          <p className="text-gray-600 text-sm">View and manage your appointments scheduled for today</p>
+        </div>
+
+        {filteredAppointments.length === 0 ? (
+          <div className="text-center py-12">
+            <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              {searchQuery ? "No Matching Appointments" : "No Appointments Today"}
+            </h3>
+            <p className="text-gray-500 text-sm max-w-sm mx-auto">
+              {searchQuery 
+                ? `No appointments match "${searchQuery}" for today. Try adjusting your search.`
+                : "You have no appointments scheduled for today. Enjoy your free time!"
+              }
+            </p>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="mt-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium transition-colors duration-200"
+              >
+                Clear Search
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredAppointments.map((patient, index) => (
+              <div
+                key={patient._id}
+                className="border border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors duration-200"
+              >
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-green-100 text-green-700 w-8 h-8 rounded-full flex items-center justify-center font-medium text-sm">
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-medium text-gray-800">{patient.name}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                          <span className="text-gray-500 text-xs">Today's Appointment</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                        </svg>
+                        <span>{patient.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{new Date(patient.date).toLocaleTimeString('en-US', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <Link
+                      to={`/doctor/patient_info/${patient._id}`}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

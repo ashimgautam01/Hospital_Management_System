@@ -70,14 +70,15 @@ const doctorLogin=asyncHandler(async(req,res)=>{
             200,
             "Doctor login success",
            {"id":doctor._id,
-            "photo":doctor.photo
+            "photo":doctor.photo,
+            "name":doctor.name
            }
         )
     )
 })
 
 const getDoctors=asyncHandler(async(req,res)=>{
-    const doctor=await Doctor.find()
+    const doctor=await Doctor.find().select("-password")
     if(!doctor){
         throw new ApiResponse(400,"There are no doctors")
     }

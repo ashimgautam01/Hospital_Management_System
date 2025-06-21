@@ -518,7 +518,7 @@ const Profile = ({ authToken, isAuthenticated }) => {
                     </svg>
                   </div>
                   <h3 className="text-xl font-semibold text-gray-700 mb-3">No Appointments Yet</h3>
-                  <p className="text-gray-600 mb-6">Start your healthcare journey by booking your first appointment.</p>
+                  <p className="text-gray-600 mb-6">Start yofur healthcare journey by booking your first appointment.</p>
                   <button 
                     onClick={() => navigate('/book-appointment')}
                     className="py-3 px-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105"

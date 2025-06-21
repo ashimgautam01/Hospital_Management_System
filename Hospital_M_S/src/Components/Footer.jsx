@@ -50,7 +50,7 @@ const Footer = ({ isStaff }) => {
                 <Link to="/membership" className="text-green-50 hover:text-white">Memberships</Link>
               </li>
               <li>
-                <Link to="/insurance" className="text-green-50 hover:text-white">Insurance</Link>
+                <Link to="/about" className="text-green-50 hover:text-white">About Us</Link>
               </li>
             </nav>
           </div>
