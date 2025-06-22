@@ -191,8 +191,30 @@ const getAppointments=asyncHandler(async(req,res)=>{
 
 })
 
-const editDoctor=asyncHandler(async(req,res)=>{
+const editDoctor = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
 
-})
+    if (!password) {
+        throw new ApiError(400, "Password is required");
+    }
 
-export {registerDoctor,doctorLogin,getAppointments,getDoctors,deleteDoctor}
+    const doctor = await Doctor.findById(id);
+    if (!doctor) {
+        throw new ApiError(404, "Doctor not found");
+    }
+
+    doctor.password = password;
+
+    await doctor.save();
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            "Password updated successfully",
+            { doctorId: doctor._id }
+        )
+    );
+});
+
+export {registerDoctor,doctorLogin,getAppointments,getDoctors,deleteDoctor,editDoctor}

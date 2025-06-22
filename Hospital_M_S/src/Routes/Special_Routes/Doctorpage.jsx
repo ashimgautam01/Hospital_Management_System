@@ -1,16 +1,105 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const DoctorPage = ({ handleLogout }) => {
-  const navigate = (path) => console.log(`Navigate to: ${path}`);
+const EditPasswordModal = ({ isOpen, onClose, doctorId }) => {
+  const [password, setPassword] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`http://localhost:8080/api/v1/doctor/edit/${doctorId}`, {
+        password,
+      });
+      setSuccess(true);
+      setError("");
+      setPassword("");
+      // Auto-close after success
+      setTimeout(() => {
+        onClose();
+        setSuccess(false);
+      }, 2000);
+    } catch (err) {
+      setSuccess(false);
+      setError("Failed to update password");
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4 relative animate-fade-in">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Change Password</h3>
+        
+        <form onSubmit={handlePasswordChange}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+            <input
+              type="password"
+              placeholder="Enter new password"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md"
+            >
+              Update Password
+            </button>
+          </div>
+        </form>
+        
+        {success && (
+          <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-md">
+            Password updated successfully!
+          </div>
+        )}
+        
+        {error && (
+          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
+            {error}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const DoctorPage = () => {
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAppointments, setFilteredAppointments] = useState([]);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const authToken = sessionStorage.getItem("doctor-token");
   const doctorPhoto = sessionStorage.getItem("photo");
-  const doctorname=sessionStorage.getItem("name")
+  const doctorName = sessionStorage.getItem("name");
 
+  // Redirect to home if not logged in as doctor
   useEffect(() => {
     if (!authToken) {
       navigate("/");
@@ -20,9 +109,7 @@ const DoctorPage = ({ handleLogout }) => {
           const response = await axios.get(
             `http://localhost:8080/api/v1/doctor/appointment/${authToken}`
           );
-
           const allAppointments = response.data.data.Appointments || [];
-           
           const today = new Date();
           const todaysAppointments = allAppointments.filter(appointment => {
             const appointmentDate = new Date(appointment.date);
@@ -32,7 +119,6 @@ const DoctorPage = ({ handleLogout }) => {
               appointmentDate.getFullYear() === today.getFullYear()
             );
           });
-
           setAppointments(todaysAppointments);
           setFilteredAppointments(todaysAppointments);
         } catch (error) {
@@ -41,7 +127,7 @@ const DoctorPage = ({ handleLogout }) => {
       };
       fetchAppointments();
     }
-  }, []);
+  }, [authToken, navigate]);
 
   useEffect(() => {
     setFilteredAppointments(
@@ -50,6 +136,14 @@ const DoctorPage = ({ handleLogout }) => {
       )
     );
   }, [searchQuery, appointments]);
+
+  // Logout function
+  const handleLogout = () => {
+    sessionStorage.removeItem("doctor-token");
+    sessionStorage.removeItem("photo");
+    sessionStorage.removeItem("name");
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
@@ -70,7 +164,7 @@ const DoctorPage = ({ handleLogout }) => {
             </div>
             <div className="text-center md:text-left">
               <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-1">
-                {doctorname}
+                {doctorName}
               </h1>
               <p className="text-gray-600 text-base">
                 {new Date().toLocaleDateString('en-US', { 
@@ -86,8 +180,16 @@ const DoctorPage = ({ handleLogout }) => {
               </div>
             </div>
           </div>
-          
           <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md font-medium text-sm transition-colors duration-200 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+              Edit Password
+            </button>
             <Link
               to={"/"}
               className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md font-medium text-sm transition-colors duration-200 flex items-center gap-2"
@@ -109,6 +211,13 @@ const DoctorPage = ({ handleLogout }) => {
           </div>
         </div>
       </div>
+
+      {/* Password Edit Modal */}
+      <EditPasswordModal 
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        doctorId={authToken}
+      />
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -148,7 +257,6 @@ const DoctorPage = ({ handleLogout }) => {
           </h2>
           <p className="text-gray-600 text-sm">View and manage your appointments scheduled for today</p>
         </div>
-
         {filteredAppointments.length === 0 ? (
           <div className="text-center py-12">
             <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,7 +301,6 @@ const DoctorPage = ({ handleLogout }) => {
                         </div>
                       </div>
                     </div>
-                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,7 +319,6 @@ const DoctorPage = ({ handleLogout }) => {
                       </div>
                     </div>
                   </div>
-                  
                   <div className="flex justify-end">
                     <Link
                       to={`/doctor/patient_info/${patient._id}`}

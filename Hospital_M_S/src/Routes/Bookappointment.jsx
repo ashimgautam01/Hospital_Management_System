@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import axios from "axios";
 import Alert from "../Components/Alert";
 
@@ -158,10 +156,6 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
   };
 
   useEffect(() => {
-    AOS.init({
-      duration: 2000,
-      once: true,
-    });
     getDoctors();
   }, []);
 
@@ -228,25 +222,6 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
           box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
         }
         
-        .floating-icon {
-          animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        
-        .pulse-border {
-          animation: pulse-border 2s infinite;
-        }
-        
-        @keyframes pulse-border {
-          0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
-          70% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
-        }
-        
         .text-gradient {
           background: linear-gradient(135deg, #065f46, #0d9488, #14b8a6);
           -webkit-background-clip: text;
@@ -277,7 +252,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
           )}
           <div className="min-h-screen gradient-bg flex flex-col justify-center items-center">
             <div className="glass-card rounded-3xl p-12 shadow-2xl max-w-md mx-auto text-center card-hover">
-              <div className="floating-icon mb-8">
+              <div className="mb-8">
                 <svg className="w-24 h-24 mx-auto text-teal-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
@@ -305,14 +280,14 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
             <div className="py-20 px-4">
               <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col lg:flex-row justify-around items-center gap-12">
-                  <div data-aos="zoom-out" className="floating-icon">
+                  <div>
                     <div className="w-64 h-64 bg-white rounded-full flex items-center justify-center shadow-2xl">
                       <svg className="w-32 h-32 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
                       </svg>
                     </div>
                   </div>
-                  <div data-aos="fade-left" className="text-center lg:text-left">
+                  <div className="text-center lg:text-left">
                     <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6">
                       Book Your
                       <span className="block ">Appointment</span>
@@ -336,9 +311,9 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
             </div>
  
             <div className="text-center mb-12">
-              <div data-aos="fade-up" className="inline-block">
-                <div className="pulse-border rounded-full p-4 bg-white/20 backdrop-blur-sm flex flex-col items-center">
-                  <svg className="w-8 h-8 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="inline-block">
+                <div className="rounded-full p-4 bg-white/20 backdrop-blur-sm flex flex-col items-center">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                   </svg>
                   <p className="text-white mt-4 font-semibold p-2">Scroll Down to Book Appointment</p>
@@ -348,7 +323,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
 
             <div className="pb-20 px-4">
               <div className="max-w-4xl mx-auto">
-                <div data-aos="flip-up" className="text-center mb-12">
+                <div className="text-center mb-12">
                   <h2 className="text-4xl font-bold text-white mb-4">
                     Book an Appointment
                   </h2>
@@ -363,7 +338,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                 </div>
 
                 <div className="glass-card rounded-3xl p-8 lg:p-12 shadow-2xl card-hover">
-                  <form className="space-y-8" onSubmit={handleSubmit} data-aos="fade-up">
+                  <form className="space-y-8" onSubmit={handleSubmit}>
                   
                     <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border-l-4 border-teal-500 p-6 rounded-r-xl">
                       <div className="flex items-center mb-4">
@@ -551,7 +526,7 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
                       >
                         {loading ? (
                           <>
-                            <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
@@ -589,7 +564,3 @@ const BookAppointment = ({ isAuthenticated, ismember }) => {
 };
 
 export default BookAppointment;
-
-  // sessionStorage.setItem('doctor-token',response.data.data.id)
-  //       sessionStorage.setItem('photo',response.data.data.photo)
-  //       sessionStorage.setItem('name',response.data.data.name)

@@ -60,16 +60,14 @@ const Profile = ({ authToken, isAuthenticated }) => {
 
     fetchUserHistory();
   }, [userData]);
-
-  // Pagination logic
+ 
   const totalPages = Math.ceil(userHistory.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentAppointments = userHistory.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Scroll to appointment history section
+    setCurrentPage(page); 
     const historySection = document.getElementById('appointment-history');
     if (historySection) {
       historySection.scrollIntoView({ behavior: 'smooth' });
@@ -87,8 +85,7 @@ const Profile = ({ authToken, isAuthenticated }) => {
       handlePageChange(currentPage + 1);
     }
   };
-
-  // Generate page numbers for pagination
+ 
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
