@@ -32,26 +32,22 @@ const Contact = () => {
                         <p className="text-sm text-green-300 mt-4">Have any issue or need help or any technical support?</p>
 
                         <ul data-aos="fade-down" className="mt-16 space-y-8 text-green-200">
-                            {/* EMAIL */}
-                            <li className="flex items-center">
-                                {/* Email Icon */}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill='#fff'
+                             <li className="flex items-center">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill='#fff'
                                     viewBox="0 0 479.058 479.058">
                                     <path d="..." />
                                 </svg>
                                 <span className="text-sm text-green-100 ml-4">cityhospital10@gmail.com</span>
                             </li>
 
-                            {/* PHONE */}
-                            <li className="flex items-center">
+                             <li className="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill='#fff' viewBox="0 0 482.6 482.6">
                                     <path d="..." />
                                 </svg>
                                 <span className="text-sm text-green-100 ml-4">+977 9864452384</span>
                             </li>
 
-                            {/* ADDRESS */}
-                            <li className="flex items-center">
+                             <li className="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill='#fff' viewBox="0 0 368.16 368.16">
                                     <path d="..." />
                                 </svg>
@@ -59,11 +55,10 @@ const Contact = () => {
                             </li>
                         </ul>
 
-                        {/* SOCIAL ICONS */}
-                        <ul className="flex flex-wrap gap-4 mt-16">
+                         <ul className="flex flex-wrap gap-4 mt-16">
                             {['facebook', 'linkedin', 'instagram'].map((_, i) => (
                                 <li key={i} className="bg-green-800 hover:bg-green-900 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
-                                    <a>{/* SVG goes here */}</a>
+                                    
                                 </li>
                             ))}
                         </ul>
@@ -71,22 +66,19 @@ const Contact = () => {
 
                     <div className="p-4 lg:col-span-2">
                         <form>
-                            <div className="grid sm:grid-cols-2 gap-8">
-                                {/* INPUT FIELDS */}
+                            <div className="grid sm:grid-cols-2 gap-8"> 
                                 {['First Name', 'Last Name', 'Phone No.', 'Email'].map((label, idx) => (
                                     <div key={idx} className="relative flex items-center">
                                         <input type={label === 'Email' ? 'email' : 'text'} placeholder={label}
                                             className="px-2 py-3 bg-white w-full text-sm text-gray-800 border-b border-teal-500 focus:border-green-500 outline-none" />
                                     </div>
                                 ))}
-
-                                {/* TEXTAREA */}
+ 
                                 <div className="relative flex items-center sm:col-span-2">
                                     <textarea placeholder="Write Message"
                                         className="px-2 pt-3 bg-white w-full text-sm text-gray-800 border-b border-teal-500 focus:border-green-500 outline-none"></textarea>
                                 </div>
-
-                                {/* RADIO BUTTONS */}
+ 
                                 <div className="col-span-full">
                                     <h6 className="text-sm text-gray-800">Select Subject</h6>
                                     <div className="flex max-lg:flex-col gap-6 mt-4">
@@ -103,8 +95,7 @@ const Contact = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* SUBMIT BUTTON */}
+ 
                             <button type="button"
                                 className="mt-12 flex items-center justify-center text-sm lg:ml-auto max-lg:w-full rounded-lg px-4 py-3 tracking-wide text-white bg-green-700 hover:bg-green-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill='#fff' className="mr-2" viewBox="0 0 548.244 548.244">

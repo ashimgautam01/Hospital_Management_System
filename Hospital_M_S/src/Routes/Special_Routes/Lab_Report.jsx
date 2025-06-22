@@ -7,11 +7,11 @@ import usePDFGeneration from "../../hooks/usePDFGeneration";
 
 const LabReportsPage = () => {
   const { labReports, isSubmitting, submitLabResult, refetchLabReports } = useLabReports();
-  const [pdfUrls, setPdfUrls] = useState({}); // Store multiple PDF URLs by report ID
+  const [pdfUrls, setPdfUrls] = useState({});  
   const [result, setResult] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [currentReport, setCurrentReport] = useState(null);
-  const [processingReportId, setProcessingReportId] = useState(null); // Track which report is being processed
+  const [processingReportId, setProcessingReportId] = useState(null); 
   const generatePDF = usePDFGeneration();
 
   const handleChange = (e) => {
@@ -19,16 +19,14 @@ const LabReportsPage = () => {
     setResult((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitResult = async (e) => {
-    // Stop event propagation to prevent it from triggering other buttons
+  const handleSubmitResult = async (e) => { 
     e && e.stopPropagation();
     
     if (!currentReport) return;
     
     setProcessingReportId(currentReport._id);
     
-    try {
-      // Submit the lab result using lab report ID
+    try { 
       const response = await axios.post(
         "http://localhost:8080/api/v1/lab/submit",
         {
@@ -39,21 +37,17 @@ const LabReportsPage = () => {
       );
 
       console.log("Lab result submitted successfully:", response.data);
-
-      // Generate PDF after successful submission
+ 
       const blob = generatePDF(currentReport, result);
       const url = URL.createObjectURL(blob);
       console.log("PDF URL generated:", url);
-      
-      // Store PDF URL with report ID as key
+       
       setPdfUrls(prev => ({ ...prev, [currentReport._id]: url }));
-
-      // Refresh the lab reports to show updated status
+ 
       if (refetchLabReports) {
         await refetchLabReports();
       }
-
-      // Reset form and close modal
+ 
       setResult({});
       setShowModal(false);
       setCurrentReport(null);
@@ -62,8 +56,7 @@ const LabReportsPage = () => {
       
     } catch (error) {
       console.error("Error submitting lab result:", error);
-      
-      // Better error handling
+       
       const errorMessage = error.response?.data?.message || 
                           error.message || 
                           "Failed to submit lab result. Please try again.";
@@ -73,8 +66,7 @@ const LabReportsPage = () => {
     }
   };
 
-  const print = (reportId, e) => {
-    // Stop event propagation
+  const print = (reportId, e) => { 
     e && e.stopPropagation();
     
     const reportPdfUrl = pdfUrls[reportId];
@@ -94,8 +86,7 @@ const LabReportsPage = () => {
     }
   };
 
-  const handleModalClose = (e) => {
-    // Stop event propagation
+  const handleModalClose = (e) => { 
     e && e.stopPropagation();
     
     setShowModal(false);
@@ -103,25 +94,21 @@ const LabReportsPage = () => {
     setCurrentReport(null);
   };
 
-  const handleSubmitClick = (report, e) => {
-    // Stop event propagation
+  const handleSubmitClick = (report, e) => { 
     e && e.stopPropagation();
     
     setCurrentReport(report);
-    setResult({}); // Reset result state
+    setResult({});  
     setShowModal(true);
   };
-
-  // Helper function to check if report is completed
+ 
   const isReportCompleted = (status) => {
     return status === "completed" || status === "success";
   };
-
-  // Helper function to validate result data before submission
+ 
   const isResultValid = () => {
     if (!currentReport || Object.keys(result).length === 0) return false;
-    
-    // Add validation based on sample type
+     
     if (currentReport.sampleType === "blood") {
       const requiredFields = ["sodium", "potassium", "calcium", "AST", "ALT"];
       return requiredFields.some(field => result[field] && result[field].trim() !== "");
@@ -214,16 +201,15 @@ const LabReportsPage = () => {
           )}
         </div>
       </div>
-
-      {/* Modal for submitting report results */}
+ 
       {showModal && currentReport && (
         <div 
           className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50 p-4 sm:p-6"
-          onClick={(e) => e.stopPropagation()} // Stop clicks from propagating through the backdrop
+          onClick={(e) => e.stopPropagation()} 
         >
           <div 
             className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full overflow-auto max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()} // Stop clicks from propagating through the modal
+            onClick={(e) => e.stopPropagation()}  
           >
             <h3 className="text-xl font-semibold mb-4">
               Submit Lab Report Result

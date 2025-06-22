@@ -15,8 +15,7 @@ const EditPasswordModal = ({ isOpen, onClose, doctorId }) => {
       });
       setSuccess(true);
       setError("");
-      setPassword("");
-      // Auto-close after success
+      setPassword(""); 
       setTimeout(() => {
         onClose();
         setSuccess(false);
@@ -98,8 +97,7 @@ const DoctorPage = () => {
   const authToken = sessionStorage.getItem("doctor-token");
   const doctorPhoto = sessionStorage.getItem("photo");
   const doctorName = sessionStorage.getItem("name");
-
-  // Redirect to home if not logged in as doctor
+ 
   useEffect(() => {
     if (!authToken) {
       navigate("/");
@@ -136,8 +134,7 @@ const DoctorPage = () => {
       )
     );
   }, [searchQuery, appointments]);
-
-  // Logout function
+ 
   const handleLogout = () => {
     sessionStorage.removeItem("doctor-token");
     sessionStorage.removeItem("photo");
@@ -211,15 +208,13 @@ const DoctorPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Password Edit Modal */}
+ 
       <EditPasswordModal 
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
         doctorId={authToken}
       />
-
-      {/* Stats Section */}
+ 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
           <div className="text-2xl font-semibold text-green-600 mb-1">{appointments.length}</div>
@@ -230,8 +225,7 @@ const DoctorPage = () => {
           <div className="text-gray-700 text-sm font-medium">Filtered Results</div>
         </div>
       </div>
-
-      {/* Search Section */}
+ 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -248,8 +242,7 @@ const DoctorPage = () => {
           />
         </div>
       </div>
-
-      {/* Main Content */}
+ 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-2">

@@ -92,8 +92,7 @@ const Lab = () => {
         [name]: value,
         charge: autoCharge
       });
-    } else {
-      // For other fields, just update normally
+    } else { 
       setNewLabRequest({
         ...newLabRequest,
         [name]: value

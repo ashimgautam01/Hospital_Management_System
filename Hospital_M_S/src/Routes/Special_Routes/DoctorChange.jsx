@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Plus, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
