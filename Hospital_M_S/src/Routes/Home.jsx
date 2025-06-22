@@ -45,9 +45,9 @@ const Home = ({ isStaff }) => {
 
   const doctors = [
     {
-      date: "Jul 18",
+      date: "Jul 29",
       specialty: "Cardiologist",
-      name: "Dr. Ram Chandra Gautam",
+      name: "Dr. Ram Chandra Gautam", 
       description: "Specializes in diagnosing and treating diseases of the cardiovascular system, including the heart and blood vessels.",
       image: "https://img.freepik.com/premium-photo/portrait-happy-successful-hindu-doctor-young-medical-practitioner-smiling-looking_321831-17342.jpg",
       rating: 4.9,
@@ -55,7 +55,7 @@ const Home = ({ isStaff }) => {
       color: "from-red-100 to-pink-100"
     },
     {
-      date: "Jul 20",
+      date: "Jul 28",
       specialty: "Neurologist",
       name: "Dr. Srijana Paudel",
       description: "Focuses on the diagnosis and treatment of disorders of the nervous system, including the brain, spinal cord, and nerves.",
@@ -65,7 +65,7 @@ const Home = ({ isStaff }) => {
       color: "from-blue-100 to-cyan-100"
     },
     {
-      date: "Jul 22",
+      date: "Jul 27",
       specialty: "Dermatologist",
       name: "Dr. Ashok Kumar Ojha",
       description: "Specializes in the treatment of skin, hair, and nail disorders, including conditions like acne, eczema, and skin cancer.",
@@ -75,15 +75,14 @@ const Home = ({ isStaff }) => {
       color: "from-green-100 to-emerald-100"
     }
   ];
-
-  // Handle video loading
+ 
   const handleVideoLoaded = () => {
     setVideoLoaded(true);
   };
 
   const handleVideoError = () => {
     setVideoError(true);
-    setVideoLoaded(true); // Still show content even if video fails
+    setVideoLoaded(true);
   };
 
   useEffect(() => {
@@ -132,8 +131,7 @@ const Home = ({ isStaff }) => {
         </div>
       )}
 
-      {/* Hero Section */}
-      <section className={`relative h-screen overflow-hidden text-white transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
+       <section className={`relative h-screen overflow-hidden text-white transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
         {!videoError ? (
           <video
             autoPlay
@@ -148,17 +146,14 @@ const Home = ({ isStaff }) => {
             Your browser does not support the video tag.
           </video>
         ) : (
-          // Fallback gradient background if video fails
-          <div className={`absolute inset-0 bg-gradient-to-br ${heroSlides[currentSlide].bg} z-0`}></div>
+           <div className={`absolute inset-0 bg-gradient-to-br ${heroSlides[currentSlide].bg} z-0`}></div>
         )}
 
         <div className="absolute inset-0 bg-black/40 z-10"></div>
 
-        {/* Hero Content */}
-        <div className="relative z-30 container mx-auto px-6 h-full flex items-center">
+          <div className="relative z-30 container mx-auto px-6 h-full flex items-center">
           <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 delay-300 ${videoLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            {/* Logo */}
-            <div className="mb-8 flex justify-center">
+           <div className="mb-8 flex justify-center">
               <div className="relative">
                 <div className="w-24 h-24 bg-white/30 rounded-full flex items-center justify-center backdrop-blur-sm animate-pulse shadow-lg">
                   <Heart className="w-12 h-12 text-red-400 animate-pulse" />
@@ -168,25 +163,21 @@ const Home = ({ isStaff }) => {
                 </div>
               </div>
             </div>
-
-            {/* Main Title */}
+ 
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight drop-shadow-xl">
               <span className="bg-gradient-to-r from-teal-200 via-green-700 to-green-200 bg-clip-text text-transparent">
                 {heroSlides[currentSlide].title}
               </span>
             </h1>
-
-            {/* Subtitle */}
+ 
             <p className="text-xl md:text-2xl mb-4 font-light text-gray-100 drop-shadow-md">
               {heroSlides[currentSlide].subtitle}
             </p>
-
-            {/* Description */}
+ 
             <p className="text-lg mb-10 max-w-3xl mx-auto leading-relaxed text-white/80 drop-shadow">
               {heroSlides[currentSlide].description}
             </p>
-
-            {/* CTA Buttons */}
+ 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-600 text-black rounded-full font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-2xl">
                 <Calendar className="inline-block w-5 h-5 mr-2" />
@@ -199,8 +190,7 @@ const Home = ({ isStaff }) => {
                 Your Health Profile
               </button>
             </div>
-
-            {/* Slide Indicators */}
+ 
             <div className="flex justify-center mt-12 space-x-2">
               {heroSlides.map((_, index) => (
                 <button
@@ -217,10 +207,9 @@ const Home = ({ isStaff }) => {
           </div>
         </div>
       </section>
-
-      {/* Rest of the content - only shown after video loads */}
+ 
       <div className={`transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
-        {/* Stats Section */}
+   
         <section className="py-20 bg-white relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-cyan-50"></div>
           <div className="relative container mx-auto px-6">
@@ -245,8 +234,7 @@ const Home = ({ isStaff }) => {
             </div>
           </div>
         </section>
-
-        {/* Doctors Section */}
+ 
         <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
@@ -307,9 +295,7 @@ const Home = ({ isStaff }) => {
               ))}
             </div>
           </div>
-        </section>
-
-        {/* Mobile App Section */}
+        </section> 
         <section className="py-20 bg-gradient-to-r from-green-800 to-teal-700 relative overflow-hidden p-8">
           <div className="absolute inset-0 bg-black/20"></div>
           
