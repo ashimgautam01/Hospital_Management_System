@@ -22,8 +22,7 @@ const Navbar = ({ isAuthenticated, user }) => {
   const [ShowLogin, setShowLogin] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const location = useLocation();
-
-  // Check if we're on the home page
+ 
   const isHomePage = location.pathname === "/";
 
   useEffect(() => {
@@ -65,8 +64,7 @@ const Navbar = ({ isAuthenticated, user }) => {
     { to: "/profile", label: "My Profile", icon: User },
     { to: "/appointments", label: "My Appointments", icon: Calendar },
   ];
-
-  // Dynamic background based on page and scroll state
+ 
   const getNavbarBackground = () => {
     if (isHomePage) {
       return isScrolled 
@@ -74,7 +72,7 @@ const Navbar = ({ isAuthenticated, user }) => {
         : "bg-transparent";
     } else {
       return isScrolled 
-        ? "bg-white/95 backdrop-blur-lg shadow-xl border-b border-gray-100" 
+        ? "bg-white/95 backdrop-blur-lg shadow-xl border-b border-gray-100  x" 
         : "bg-gradient-to-r from-white/90 to-teal-50/90 backdrop-blur-sm";
     }
   };
@@ -99,7 +97,7 @@ const Navbar = ({ isAuthenticated, user }) => {
             <Link
               key={link.to}
               to={link.to}
-              className="flex items-center space-x-2 text-gray-700 hover:text-teal-600 px-4 py-2 rounded-xl hover:bg-teal-50/70 transition-all duration-300 group"
+              className="flex items-center space-x-2  hover:text-teal-600 px-4 py-2 rounded-xl hover:bg-teal-50/70 transition-all duration-300 group"
             >
               <link.icon className={`w-5 h-5 ${link.color} group-hover:scale-110 transition-transform`} />
               <span className="font-medium">{link.label}</span>
@@ -116,14 +114,14 @@ const Navbar = ({ isAuthenticated, user }) => {
                   <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-green-600 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-white" />
                   </div>
-                  <div className="text-left">
+                  {/* <div className="text-left">
                     <p className="text-sm font-semibold text-gray-800">
                       {user?.username || user?.name || "User"}
                     </p>
                     <p className="text-xs text-gray-600 truncate max-w-24">
                       {user?.email || "user@example.com"}
                     </p>
-                  </div>
+                  </div> */}
                   <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
                     isProfileDropdownOpen ? 'rotate-180' : ''
                   }`} />
@@ -138,8 +136,8 @@ const Navbar = ({ isAuthenticated, user }) => {
                           <User className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800">{user?.username || user?.name || "User Name"}</p>
-                          <p className="text-sm text-gray-600">{user?.email || "user@example.com"}</p>
+                          {/* <p className="font-semibold text-gray-800">{user?.username || user?.name || "User Name"}</p>
+                          <p className="text-sm text-gray-600">{user?.email || "user@example.com"}</p> */}
                           <div className="flex items-center space-x-1 mt-1">
                             <Crown className="w-3 h-3 text-yellow-500" />
                             <span className="text-xs text-yellow-600 font-medium">Premium Member</span>

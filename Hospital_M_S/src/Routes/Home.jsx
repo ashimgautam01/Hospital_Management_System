@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Heart, Calendar, Stethoscope, Star, MapPin, Phone, Clock, ChevronRight, Activity, Shield, Users, Award, Loader } from 'lucide-react';
-
-const Footer = () => (
-  <footer className="bg-gray-800 text-white py-8">
-    <div className="container mx-auto px-6 text-center">
-      <p>&copy; 2024 City Hospital. All rights reserved.</p>
-    </div>
-  </footer>
-);
+import Footer from '../Components/Footer';
 
 const Home = ({ isStaff }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
